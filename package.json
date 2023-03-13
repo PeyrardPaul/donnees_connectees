@@ -1,0 +1,11 @@
+{
+  "name": "donnees_connectees",
+  "version": "1.0.0",
+  "description": "projet donnees connectees",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "moi",
+  "license": "ISC"
+}
