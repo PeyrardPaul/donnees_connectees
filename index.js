@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var data = {};
 var id = 0;
+var format;
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -28,7 +29,8 @@ app.post("/formulaire", function(req, res){
 
 //Reçoit le formulaire et redirige vers une page  avec comme route l'identifiant
 app.get("/annotation", function(req, res){
-    const id = req.query.IdAnnot
+    const id = req.query.IdAnnot;
+    format = req.query.FormatIdAnnot;
     res.redirect(`/annotation/${id}`)
 });
 
@@ -36,36 +38,31 @@ app.get("/annotation", function(req, res){
 app.get("/annotation/:IdAnnot", function(req, res){
     const id = req.params.IdAnnot // Récupérer l'identifiant de l'utilisateur depuis la requête POST    
     
-    var ChoixFormat=req.query.FormatIdAnnot;
+    var Exist=Object.keys(data).includes(id);
+    var ChoixFormat=format;
+
 	if (ChoixFormat=="html"){
 		res.set('Content-Type', 'text/html');
+        if (Exist){
+            let html = "<h2>Annotation correspondante à l'identifiant " + id + " :</h2><br>";
+            html += "<p><strong>URI=</strong>" + data[id].URI + "<br><strong>Note=</strong>" + data[id].Note + "<br><strong>Commentaire=</strong>" + data[id].Commentaire + "</p>"
+            res.send(html); 
+         }
+         else {
+            res.send("Aucune annotation n'est associée à cette clé");
+         }
 	}
 	else {
 		if (ChoixFormat=="Json"){
             res.set('Content-Type', 'application/json');
+            if (Exist){
+                res.send(data[id]); 
+             }
+             else {
+                res.send("Aucune annotation n'est associée à cette clé");
+             }
 		}	
 	}
-
-    var Exist=Object.keys(data).includes(id);
-    res.format ({
-		   'text/html': function() {
-			    if (Exist){
-				   res.send(data[id]); 
-			    }
-			    else {
-				   res.send("Aucune annotation n'est associée à cette clé");
-			    }
-		   },
-
-		   'application/json': function() {
-			    if (Exist){
-				   res.send(data[id]); 
-			    }
-			    else {
-				   res.send("Aucune annotation n'est associée à cette clé");
-			    }
-			}
-	});
 	
 });
 
@@ -91,25 +88,25 @@ app.get("/annotation/:IdAnnot", function(req, res){
 //         </form>`)
 //   })
 
+//Affiche toutes les annotations qui ont été crée
 app.post('/recupAll', (req, res) => {
-    var ChoixFormat=req.query.FormatIdAnnot;
+    var ChoixFormat = req.body.FormatIdAnnot;
     if (ChoixFormat=="html"){
-		res.set('Content-Type', 'text/html');
-	}
+        res.set('Content-Type', 'text/html');
+        let html = '<h2>Toutes les annotations:</h2><br><ul>';
+
+        for (let key in data) {
+            html += '<li>Identifiant=' + key +'  Note='+ data[key].Note +'  et Commentaire='+ data[key].Commentaire +'</li>';
+        }
+        html += '</ul>';
+        res.send(html);
+        }
 	else {
 		if (ChoixFormat=="Json"){
             res.set('Content-Type', 'application/json');
+            res.send(data);
 		}	
 	}
-
-    let html = '<ul>';
-
-    for (let key in data) {
-      html += '<li>Identifiant=' + key +'  Note='+ data[key].Note +'  et Commentaire='+ data[key].Commentaire +'</li>';
-    }
-    html += '</ul>';
-    res.send(html);
-    console.log(html)
 })
 
 
