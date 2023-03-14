@@ -3,16 +3,82 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Debut Données Connectées</title>
+
+		<script>
+			function envoi() {
+				var body = {
+							"URI": document.getElementById("uri").value,
+							"Note":document.getElementById('note').value, 
+							"Commentaire":document.getElementById('com').value};
+				const resultat = document.getElementById('message');
+				event.preventDefault();
+				let route = "/formulaire";
+				fetch(route, {
+					method: 'POST',
+					body: JSON.stringify(body) ,
+					headers:{'Content-Type': 'application/json'}
+				}).then(response => response.text())
+        			.then(data => resultat.innerHTML = data)
+			}
+
+			const IdAnnot = document.querySelector('#IdAnnot').value;
+			fetch('/annotation/' + IdAnnot, { method: 'POST' })
+				.then(response => response.text())
+				.then(result => {
+				document.getElementById("IdAnnot").innerHTML = result;
+				})
+				.catch(error => {
+				console.error(error);
+				});
+		</script>
 	</head>
 	<body>
-		<form action="/annotation" method="post">
+		<h1>Créer une annotation</h1>
+		<form id="monFormulaire">
+
+			<label for="uri">URI:</label>
+            <input type="text" id="uri" name="uri">
+
             <label for="note">Annotation:</label>
             <input type="number" id="note" name="note">
     
             <label for="com">Commentaire:</label>
             <input type="text" id="com" name="com">
     
-            <button type="submit">Envoyer</button>
+            <button type="submit" onclick="envoi()">Envoyer</button>
         </form>
+		<p id="message"></p>
+
+
+		
+		<h1>Récupérer 1 annotation</h1>
+		<form action="/annotation" method="GET">
+			<label for="IdAnnot">Identifiant annotation:</label>
+			<input type="number" id="IdAnnot" name="IdAnnot">
+			<label for="FormatIdAnnot">Format de réponse:</label><br>
+				<select name="FormatIdAnnot" id="FormatIdAnnot">
+					<option value="html">html</option>
+					<option value="Json">Json</option>
+				</select>
+			<input type="submit" value="Récupérer">
+		</form>
+		<p id="IdAnnot"></p>
+
+
+		<h1>Récupérer toutes les annotations à 1 ressource</h1>
+		<label for="recup1Uri">URI recherchée:</label>
+        <input type="number" id="recup1Uri" name="recup1Uri">
+		<input type="submit" value="Récupérer">
+
+		<h1>Récupérer toutes les annotations du serveur</h1>
+		<form action="/recupAll" method="post">
+			<label for="FormatIdAnnot">Format de réponse:</label><br>
+				<select name="FormatIdAnnot" id="FormatIdAnnot">
+					<option value="html">html</option>
+					<option value="Json">Json</option>
+				</select>
+			<input type="submit" value="Tout récupérer">
+		</form>
+
 	</body>
 </html>
