@@ -13,6 +13,12 @@ const port = process.env.PORT || 3000;  //Si sur le serveur le port existe alors
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('html'));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    next();
+});
 
 
 // route pour ouvrir le fichier html du formulaire à l'entrée
@@ -23,7 +29,7 @@ app.get("/formulaire", function(req, res) {
 
 
 //ajoute les annotations dans un dictionnaire json
-app.post("/formulaire", cors(), function(req, res){
+app.post("/formulaire", function(req, res){
 	var body = req.body;
 	data[id] = body	
     if (body.URI in data_uri) {
