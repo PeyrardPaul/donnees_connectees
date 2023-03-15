@@ -29,7 +29,7 @@ app.get("/formulaire", function(req, res) {
 
 
 //ajoute les annotations dans un dictionnaire json
-app.post("/formulaire", function(req, res){
+app.post("/formulaire", cors(), function(req, res){
 	var body = req.body;
 	data[id] = body	
     if (body.URI in data_uri) {
