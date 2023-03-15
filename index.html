@@ -15,21 +15,10 @@
 				let route = "https://projetdonneesconnectees-94w1.onrender.com/formulaire";
 				fetch(route, {
 					method: 'POST',
-					body: JSON.stringify(body) ,
-					headers:{'Content-Type': 'application/json'}
+					body: JSON.stringify(body)
 				}).then(response => response.text())
         			.then(data => resultat.innerHTML = data)
 			}
-
-			// const IdAnnot = document.querySelector('#IdAnnot').value;
-			// fetch('/annotation/' + IdAnnot, { method: 'POST' })
-			// 	.then(response => response.text())
-			// 	.then(result => {
-			// 	document.getElementById("IdAnnot").innerHTML = result;
-			// 	})
-			// 	.catch(error => {
-			// 	console.error(error);
-			// 	});
 		</script>
 	</head>
 	<body>
