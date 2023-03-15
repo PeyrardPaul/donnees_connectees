@@ -84,9 +84,51 @@ app.get("/annotation/:IdAnnot", function(req, res){
 //----------------------------------- 1 URI
 //Reçoit le formulaire et redirige vers une page  avec comme route l'uri
 app.get("/URI", function(req, res){
-    const uri = req.query.recupUri;
+    const uri = req.query.uri;
     format = req.query.FormatIdAnnot;
-    res.redirect(`/URI/${uri}`);
+    
+    var Exist=Object.keys(data_uri).includes(uri);
+    var ChoixFormat=format;
+
+    if (ChoixFormat=="html"){
+		res.set('Content-Type', 'text/html');
+        if (Exist){
+            let html = "<h2>Annotation correspondante à l'URI " + uri + " :</h2><br><ul>";
+            for (key in data){
+                if (data[key]["URI"]==uri){
+                    html += '<li><strong>Identifiant=</strong>' + key +'  <strong>Note=</strong>'+ data[key].Note +'  et <strong>Commentaire=</strong>'+ data[key].Commentaire +'</li>';
+                }
+            }
+            res.send(html); 
+         }
+         else {
+            res.send("Aucune annotation n'est associée à cette clé");
+         }
+	}
+	else {
+		if (ChoixFormat=="Json"){
+            res.set('Content-Type', 'application/json');
+
+            tab_result = {};
+            let i = 0;
+            if (Exist){
+                for (key in data){
+                    if (data[key]["URI"]==uri){
+                        tab_result[i] = {"IdAnnotation" : key, "Note" : data[key]["Note"], "Commentaire" : data[key]["Commentaire"]};
+                        i++;
+                    }
+                }
+                res.send(tab_result);
+
+             }
+             else {
+                res.send("Aucune annotation n'est associée à cette clé");
+             }
+		}	
+	}
+
+    //cette ligne de code redirige vers la méthode get en dessous qui permet de le faire sans paramètre et si le client saisi une route au lieu d'une uri
+    // res.redirect(`/URI/${uri}`);
 });
 
 app.get("/URI/:recupUri", function(req, res){
@@ -132,43 +174,6 @@ app.get("/URI/:recupUri", function(req, res){
 		}	
 	}
 });
-
-
-//lance la page de l'uri correspondante
-// app.get("/annotation/:Road", function(req, res){
-//     const id = req.params.Road // Récupérer l'identifiant de l'utilisateur depuis la requête POST    
-    
-//     var Exist=Object.keys(data).includes(id);
-//     var ChoixFormat=format;
-
-// 	if (ChoixFormat=="html"){
-// 		res.set('Content-Type', 'text/html');
-//         if (Exist){
-//             let html = "<h2>Annotation correspondante à l'identifiant " + id + " :</h2><br>";
-//             html += "<p><strong>URI=</strong>" + data[id].URI + "<br><strong>Note=</strong>" + data[id].Note + "<br><strong>Commentaire=</strong>" + data[id].Commentaire + "</p>"
-//             res.send(html); 
-//          }
-//          else {
-//             res.send("Aucune annotation n'est associée à cette clé");
-//          }
-// 	}
-// 	else {
-// 		if (ChoixFormat=="Json"){
-//             res.set('Content-Type', 'application/json');
-//             if (Exist){
-//                 res.send(data[id]); 
-//              }
-//              else {
-//                 res.send("Aucune annotation n'est associée à cette clé");
-//              }
-// 		}	
-// 	}
-// });
-
-
-
-
-
 
 
 
