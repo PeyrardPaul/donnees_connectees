@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 
 
 // route pour ouvrir le fichier html du formulaire à l'entrée
-app.get("/formulaire", function(req, res) {
+app.get("/formulaire", cors(), function(req, res) {
     res.sendfile("index.html");
 });
 
